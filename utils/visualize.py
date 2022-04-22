@@ -1,3 +1,4 @@
+import json
 import torch
 import torchvision
 import random
@@ -8,7 +9,7 @@ from matplotlib import pyplot as plt
 from IPython import display
 
 
-__all__ = ['draw_box', 'draw_detection_result', 'PIL_to_cv2', 'cv2_to_PIL', 'tensor_to_PIL', 'tensor_to_cv2', 'Animator']
+__all__ = ['draw_box', 'draw_detection_result', 'draw_ground_truth', 'PIL_to_cv2', 'cv2_to_PIL', 'tensor_to_PIL', 'tensor_to_cv2', 'Animator']
 
 
 categories = ['aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus', 'car', 'cat', 'chair', 'cow', 'diningtable', 'dog', 'horse', 'motorbike', 'person', 'pottedplant', 'sheep', 'sofa', 'train', 'tvmonitor']
@@ -53,7 +54,7 @@ def draw_detection_result(img, pred, raw=False, thres=0.1):
 	Tool function to draw detection result on image
 	:param img: numpy image to be rendered
 	:param pred: detection result (torch.Tensor)
-	:param raw: if true, raw detection result will be rendered
+	:param raw: if true, two dimension of detection results will be rendered (5 * 2 + 20)
 	:param thres: threshold to filter out low confidence boxes
 	:return: image with detection result
 	"""
@@ -78,6 +79,24 @@ def draw_detection_result(img, pred, raw=False, thres=0.1):
 			if iou * score < thres: continue
 			img = draw_box(img, x, y, w, h, score * iou, cat)
 
+	return img
+
+
+def draw_ground_truth(img, truth):
+	"""
+	Tool function to draw ground truth
+	:param img: numpy image to be rendered
+	:param pred: truth bbox in json format (str)
+	:return: image with ground truth bbox
+	"""
+	pred = json.loads(truth)
+	for bbox in pred:
+		xmin, ymin, xmax, ymax = bbox['xmin'], bbox['ymin'], bbox['xmax'], bbox['ymax']
+		w = xmax - xmin
+		h = ymax - ymin
+		x = (xmin + xmax) / 2
+		y = (ymin + ymax) / 2
+		img = draw_box(img, x, y, w, h, 1, bbox['category'])
 	return img
 
 
