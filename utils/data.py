@@ -1,3 +1,4 @@
+import json
 import math
 import torch
 import torchvision
@@ -5,12 +6,13 @@ import random
 from torch.utils import data
 
 
-__all__ = ['VOCDataset', 'load_data_voc']
+__all__ = ['VOCDataset', 'VOCRawTestDataset', 'load_data_voc']
 
 
 categories = ['aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus', 'car', 'cat', 'chair', 'cow', 'diningtable', 'dog', 'horse', 'motorbike', 'person', 'pottedplant', 'sheep', 'sofa', 'train', 'tvmonitor']
 
 
+# Dataset adapt for Yolo format (divided into cells)
 class VOCDataset(data.Dataset):
 	def __init__(self, dataset, train=True):
 		self.dataset = dataset
@@ -127,6 +129,46 @@ class VOCDataset(data.Dataset):
 		return img, label
 
 
+# Raw Dataset for testing mAP, Precision and Recall
+# Target are 
+class VOCRawTestDataset(data.Dataset):
+	def __init__(self, dataset):
+		self.dataset = dataset
+	
+	def __len__(self):
+		return len(self.dataset)
+
+	def __getitem__(self, idx):
+		img, target = self.dataset[idx]
+
+		if not isinstance(target['annotation']['object'], list):
+			target['annotation']['object'] = [target['annotation']['object']]
+		count = len(target['annotation']['object'])
+
+		height, width = int(target['annotation']['size']['height']), int(target['annotation']['size']['width'])
+
+		# resize to 448*448
+		img = torchvision.transforms.functional.resize(img, (448, 448))
+
+		# update labels from absolute to relative
+		height, width = float(height), float(width)
+
+		ret_targets = []
+
+		for i in range(count):
+			obj = target['annotation']['object'][i]
+
+			ret_targets.append({
+				'xmin': float(obj['bndbox']['xmin']) / width,
+				'ymin': float(obj['bndbox']['ymin']) / height,
+				'xmax': float(obj['bndbox']['xmax']) / width,
+				'ymax': float(obj['bndbox']['ymax']) / height,
+				'category': categories.index(obj['name'])
+			})
+		
+		return img, json.dumps(ret_targets)
+
+
 def load_data_voc(batch_size, num_workers=0, persistent_workers=False, download=False):
 	"""
 	Loads the Pascal VOC dataset.
@@ -144,6 +186,6 @@ def load_data_voc(batch_size, num_workers=0, persistent_workers=False, download=
 	return (
 		data.DataLoader(VOCDataset(data.ConcatDataset([voc2007_trainval, voc2007_test, voc2012_train]), train=True), 
 			batch_size, shuffle=True, num_workers=num_workers, persistent_workers=persistent_workers), 
-		data.DataLoader(VOCDataset(voc2012_val, train=False), 
+		data.DataLoader(VOCRawTestDataset(voc2012_val), 
 			batch_size, shuffle=True, num_workers=num_workers, persistent_workers=persistent_workers)
 	)
