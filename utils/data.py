@@ -101,17 +101,28 @@ class VOCDataset(data.Dataset):
 			xidx = math.floor(x * 7.0)
 			yidx = math.floor(y * 7.0)
 			
-			for offset in [0, 5]:
-				# Transforming image relative coordinates to cell relative coordinates:
-				# x - idx / 7.0 = x_cell / cell_count (7.0)
-				# => x_cell = x * cell_count - idx = x * 7.0 - idx
-				# y is the same
-				label[yidx][xidx][0 + offset] = x * 7.0 - xidx
-				label[yidx][xidx][1 + offset] = y * 7.0 - yidx
-				label[yidx][xidx][2 + offset] = width
-				label[yidx][xidx][3 + offset] = height
-				label[yidx][xidx][4 + offset] = 1
-			label[yidx][xidx][10 + categories.index(name)] = 1
+
+			# According to the paper
+			# if multiple objects exist in the same cell
+			# pick the one with the largest area
+			if label[yidx][xidx][4] == 1: # already have object
+				if label[yidx][xidx][2] * label[yidx][xidx][3] < width * height:
+					use_data = True
+				else: use_data = False
+			else: use_data = True
+
+			if use_data:
+				for offset in [0, 5]:
+					# Transforming image relative coordinates to cell relative coordinates:
+					# x - idx / 7.0 = x_cell / cell_count (7.0)
+					# => x_cell = x * cell_count - idx = x * 7.0 - idx
+					# y is the same
+					label[yidx][xidx][0 + offset] = x * 7.0 - xidx
+					label[yidx][xidx][1 + offset] = y * 7.0 - yidx
+					label[yidx][xidx][2 + offset] = width
+					label[yidx][xidx][3 + offset] = height
+					label[yidx][xidx][4 + offset] = 1
+				label[yidx][xidx][10 + categories.index(name)] = 1
 
 		return img, label
 
