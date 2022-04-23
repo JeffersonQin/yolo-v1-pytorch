@@ -187,7 +187,7 @@ def load_data_voc(batch_size, num_workers=0, persistent_workers=False, download=
 	return (
 		data.DataLoader(VOCDataset(data.ConcatDataset([voc2007_trainval, voc2007_test, voc2012_train]), train=True), 
 			batch_size, shuffle=True, num_workers=num_workers, persistent_workers=persistent_workers), 
-		data.DataLoader(VOCDataset(voc2012_val), 
+		data.DataLoader(VOCDataset(voc2012_val, train=False), 
 			batch_size, shuffle=test_shuffle, num_workers=num_workers, persistent_workers=persistent_workers),
 		data.DataLoader(VOCRawTestDataset(voc2012_val), 
 			batch_size, shuffle=test_shuffle, num_workers=num_workers, persistent_workers=persistent_workers)
