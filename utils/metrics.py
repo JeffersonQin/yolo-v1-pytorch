@@ -46,9 +46,16 @@ class ObjectDetectionMetricsCalculator():
 	#   }
 	# ]
 
-	def __init__(self, num_classes: int):
+	def __init__(self, num_classes: int, confidence_thres: float):
+		"""ObjectDetectionMetricsCalculator Initialization
+
+		Args:
+			num_classes (int): number of classes detector can classify
+			confidence_thres (float): confidence threshold. if the detection's confidence is smaller than the threshold, it would not be counted as a detection. In other words, it would be neither TP nor FP.
+		"""
 		# initialize data
 		self.data = [{"data": [], "detection": 0, "truth": 0} for _ in range(num_classes)]
+		self.confidence_thres = confidence_thres
 
 
 	def add_image_data(self, pred: torch.Tensor, truth: str):
@@ -65,6 +72,11 @@ class ObjectDetectionMetricsCalculator():
 		iou = [0 for _ in range(pred.shape[0])]
 
 		for i in range(pred.shape[0]):
+			score, cat = pred[i][10:30].max(dim=0)
+			confidence = pred[i][4]
+			# filter by confidence threshold
+			if confidence * score < self.confidence_thres: continue
+			
 			x, y, w, h = pred[i][0:4]
 			# calculate cell index
 			xidx = i % 7
@@ -81,7 +93,6 @@ class ObjectDetectionMetricsCalculator():
 			for j in range(len(truth)):
 				bbox = truth[j]
 				# judge whether is same class
-				_, cat = pred[i][10:30].max(dim=0)
 				if cat != bbox['category']: continue
 				# calculate IoU
 				xmin, ymin, xmax, ymax = bbox['xmin'], bbox['ymin'], bbox['xmax'], bbox['ymax']
@@ -108,6 +119,8 @@ class ObjectDetectionMetricsCalculator():
 		for i in sort_idx:
 			score, cat = pred[i][10:30].max(dim=0)
 			confidence = pred[i][4]
+			# filter by confidence threshold
+			if confidence * score < self.confidence_thres: continue
 
 			truth_index = choose_truth_index[i]
 			if truth_index == None: 
