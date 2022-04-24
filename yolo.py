@@ -335,7 +335,7 @@ def train(net, train_iter, test_iter, num_epochs, lr, momentum, weight_decay, de
 
 			# update metrics
 			with torch.no_grad():
-				metrics.add(loss_val.sum().cpu() * X.shape[0], X.shape[0])
+				metrics.add(loss_val.sum().cpu(), X.shape[0])
 			train_l = metrics[0] / metrics[1]
 			
 			timer.stop()
@@ -361,7 +361,7 @@ def train(net, train_iter, test_iter, num_epochs, lr, momentum, weight_decay, de
 					yhat = net(X)
 
 					loss_val = yolo_loss(yhat, y)
-					metrics.add(loss_val.sum().cpu() * X.shape[0], X.shape[0])
+					metrics.add(loss_val.sum().cpu(), X.shape[0])
 			
 			timer.stop()
 			
