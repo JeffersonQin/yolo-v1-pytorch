@@ -356,12 +356,12 @@ def train(net, train_iter, test_iter, num_epochs, lr, momentum, weight_decay, de
 			timer.start()
 			
 			for batch in test_iter:
-					X, y = batch
-					X, y = X.to(device), y.to(device)
-					yhat = net(X)
+				X, y = batch
+				X, y = X.to(device), y.to(device)
+				yhat = net(X)
 
-					loss_val = yolo_loss(yhat, y)
-					metrics.add(loss_val.sum().cpu(), X.shape[0])
+				loss_val = yolo_loss(yhat, y)
+				metrics.add(loss_val.sum().cpu(), X.shape[0])
 			
 			timer.stop()
 			
