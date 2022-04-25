@@ -232,8 +232,10 @@ def yolo_loss(yhat, y):
 		# confidence
 		+ (y_res[..., 4] - yhat_res[..., 4]) ** 2
 		# class
-		+ ((y_class - yhat_class) ** 2).sum(dim=3)) * have_obj + \
-		((y_res[..., 4] - yhat_res[..., 4]) ** 2) * no_obj * lambda_noobj).sum(dim=(1, 2))
+		+ ((y_class - yhat_class) ** 2).sum(dim=3)) * have_obj
+		# noobj
+		+ ((y_area[..., 0, 4] - yhat_area[..., 0, 4]) ** 2 + \
+		(y_area[..., 1, 4] - yhat_area[..., 1, 4]) ** 2) * no_obj * lambda_noobj).sum(dim=(1, 2))
 
 
 def pretrain(net, train_iter, test_iter, num_epochs, lr, momentum, weight_decay, device):
