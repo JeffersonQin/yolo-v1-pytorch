@@ -168,22 +168,6 @@ class ObjectDetectionMetricsCalculator():
 		return ret
 
 
-	def draw_precision_recall(self, pr_data: list):
-		"""Draw Precision-Recall Curve
-
-		Args:
-			pr_data (list): Precision Recall Curve Data
-		"""
-		p = [data['precision'] for data in pr_data]
-		r = [data['recall'] for data in pr_data]
-
-		plt.plot(r, p, 'o-', color='r')
-		plt.xlabel("Recall")
-		plt.ylabel("Precision")
-
-		plt.show()
-
-
 	def calculate_average_precision(self, iou_thres: float, class_idx: int, itpl_option: InterpolationMethod) -> float:
 		"""Calculate Average Precision (AP)
 

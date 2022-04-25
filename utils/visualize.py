@@ -1,4 +1,5 @@
 import json
+from typing import Optional
 import torch
 import torchvision
 import random
@@ -9,12 +10,32 @@ from matplotlib import pyplot as plt
 from IPython import display
 
 
-__all__ = ['draw_box', 'draw_detection_result', 'draw_ground_truth', 'PIL_to_cv2', 'cv2_to_PIL', 'tensor_to_PIL', 'tensor_to_cv2', 'Animator']
+__all__ = ['draw_box', 'draw_detection_result', 'draw_ground_truth', 'PIL_to_cv2', 'cv2_to_PIL', 'tensor_to_PIL', 'tensor_to_cv2', 'Animator', 'draw_precision_recall']
 
 
 categories = ['aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus', 'car', 'cat', 'chair', 'cow', 'diningtable', 'dog', 'horse', 'motorbike', 'person', 'pottedplant', 'sheep', 'sofa', 'train', 'tvmonitor']
 # 20 random color for labeling
 colors = [(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)) for _ in range(20)]
+
+
+def draw_precision_recall(pr_data: list, class_idx: Optional[int]=None):
+	"""Draw Precision-Recall Curve
+
+	Args:
+		pr_data (list): Precision Recall Curve Data
+		class_idx (Optional[int]): Class index, used to render title
+	"""
+	p = [data['precision'] for data in pr_data]
+	r = [data['recall'] for data in pr_data]
+
+	plt.plot(r, p, 'o-', color='r')
+	plt.xlabel("Recall")
+	plt.ylabel("Precision")
+
+	if class_idx is not None:
+		plt.title(categories[class_idx])
+
+	plt.show()
 
 
 def draw_box(img, x, y, w, h, score, category):
