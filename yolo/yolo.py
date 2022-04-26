@@ -253,7 +253,7 @@ def pretrain(net, train_iter, test_iter, num_epochs, lr, momentum, weight_decay,
 	# TODO: IMPLEMENT HERE
 
 
-def train(net, train_iter, test_iter, num_epochs, lr, momentum, weight_decay, device, accum_batch_num=1, save_path='./model', load=None, load_epoch=-1, pretrained=False):
+def train(net, train_iter, test_iter, num_epochs, lr, momentum, weight_decay, num_gpu=1, accum_batch_num=1, save_path='./model', load=None, load_epoch=-1, pretrained=False):
 	'''
 	Train net work. Some notes for load & load_epoch:
 	:param load: the file of model weights to load
@@ -269,6 +269,9 @@ def train(net, train_iter, test_iter, num_epochs, lr, momentum, weight_decay, de
 		for param_group in opt.param_groups:
 			param_group['lr'] = lr
 
+	def get_all_gpu(num_gpu):
+		return [torch.device('cuda:' + str(i)) for i in range(num_gpu)]
+
 	os.makedirs(save_path, exist_ok=True)
 	log_file = os.path.join(save_path, f'log-{time.time_ns()}.txt')
 
@@ -281,7 +284,16 @@ def train(net, train_iter, test_iter, num_epochs, lr, momentum, weight_decay, de
 		net.apply(weight_init)
 	
 	# copy to device
-	net.to(device)
+	if not torch.cuda.is_available():
+		net = net.to(torch.device('cpu'))
+		devices = [torch.device('cpu')]
+	else:
+		if num_gpu > 1:
+			net = nn.DataParallel(net, get_all_gpu(num_gpu))
+			devices = get_all_gpu(num_gpu)
+		else:
+			net = net.to(torch.device('cuda'))
+			devices = [torch.device('cuda')]
 	# define optimizer
 	if isinstance(lr, float):
 		tlr = lr
@@ -314,7 +326,7 @@ def train(net, train_iter, test_iter, num_epochs, lr, momentum, weight_decay, de
 			timer.start()
 
 			X, y = batch
-			X, y = X.to(device), y.to(device)
+			X, y = X.to(devices[0]), y.to(devices[0])
 			yhat = net(X)
 
 			loss_val = yolo_loss(yhat, y)
@@ -362,7 +374,7 @@ def train(net, train_iter, test_iter, num_epochs, lr, momentum, weight_decay, de
 			
 			for batch in test_iter:
 				X, y = batch
-				X, y = X.to(device), y.to(device)
+				X, y = X.to(devices[0]), y.to(devices[0])
 				yhat = net(X)
 
 				loss_val = yolo_loss(yhat, y)
