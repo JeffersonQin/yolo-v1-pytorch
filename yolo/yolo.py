@@ -26,6 +26,7 @@ class YoloBackbone(nn.Module):
 		conv1 = nn.Sequential(
 			# [#, 448, 448, 3] => [#, 224, 224, 64]
 			nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3),
+			nn.BatchNorm2d(64),
 			nn.LeakyReLU(0.1, inplace=True)
 		)
 		# [#, 224, 224, 64] => [#, 112, 112, 64]
@@ -33,6 +34,7 @@ class YoloBackbone(nn.Module):
 		conv2 = nn.Sequential(
 			# [#, 112, 112, 64] => [#, 112, 112, 192]
 			nn.Conv2d(64, 192, kernel_size=3, padding=1),
+			nn.BatchNorm2d(192),
 			nn.LeakyReLU(0.1, inplace=True)
 		)
 		# [#, 112, 112, 192] => [#, 56, 56, 192]
@@ -40,15 +42,19 @@ class YoloBackbone(nn.Module):
 		conv3 = nn.Sequential(
 			# [#, 56, 56, 192] => [#, 56, 56, 128]
 			nn.Conv2d(192, 128, kernel_size=1),
+			nn.BatchNorm2d(128),
 			nn.LeakyReLU(0.1, inplace=True),
 			# [#, 56, 56, 128] => [#, 56, 56, 256]
 			nn.Conv2d(128, 256, kernel_size=3, padding=1),
+			nn.BatchNorm2d(256),
 			nn.LeakyReLU(0.1, inplace=True),
 			# [#, 56, 56, 256] => [#, 56, 56, 256]
 			nn.Conv2d(256, 256, kernel_size=1),
+			nn.BatchNorm2d(256),
 			nn.LeakyReLU(0.1, inplace=True),
 			# [#, 56, 56, 256] => [#, 56, 56, 512]
 			nn.Conv2d(256, 512, kernel_size=3, padding=1),
+			nn.BatchNorm2d(512),
 			nn.LeakyReLU(0.1, inplace=True)
 		)
 		# [#, 56, 56, 512] => [#, 28, 28, 512]
@@ -57,9 +63,11 @@ class YoloBackbone(nn.Module):
 		conv4_part = nn.Sequential(
 			# [#, 28, 28, 512] => [#, 28, 28, 256]
 			nn.Conv2d(512, 256, kernel_size=1),
+			nn.BatchNorm2d(256),
 			nn.LeakyReLU(0.1, inplace=True),
 			# [#, 28, 28, 256] => [#, 28, 28, 512]
 			nn.Conv2d(256, 512, kernel_size=3, padding=1),
+			nn.BatchNorm2d(512),
 			nn.LeakyReLU(0.1, inplace=True)
 		)
 		conv4_modules = []
