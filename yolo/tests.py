@@ -1,4 +1,6 @@
+import cv2
 import torch
+import torchvision
 from torch.utils import data
 from .yolo import nms
 from IPython import display
@@ -50,3 +52,22 @@ def test_and_draw_mAP(net: torch.nn.Module, test_iter_raw: data.DataLoader):
 
 	for i in range(20):
 		draw_precision_recall(calc.calculate_precision_recall(0.5, i), i)
+
+
+def test_img(net: torch.nn.Module, src: str):
+	"""Test an image
+
+	Args:
+		net (torch.nn.Module): network
+		src (str): image path
+	"""
+	net.eval()
+
+	img = cv2.imread(src)
+	img = torchvision.transforms.functional.resize(cv2_to_PIL(img), (448, 448))
+	to_tensor = torchvision.transforms.ToTensor()
+	X = to_tensor(img).unsqueeze_(0)
+	YHat = net(X)
+	for x, yhat in zip(X, YHat):
+		yhat = nms(yhat)
+		display.display(cv2_to_PIL(draw_detection_result(tensor_to_cv2(x), yhat, raw=False, thres=0.1)))
