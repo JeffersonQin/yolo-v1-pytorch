@@ -1,6 +1,8 @@
 # YOLO v1 PyTorch Implementation
 
-**I wrote this repo for the purpose of learning, aimed to reproduce YOLO v1 using PyTorch.** The original network is very hard to pretrain on ImageNet, so I replaced the backbone with ResNet18 and ResNet50 with PyTorch pretrained version for convenience. However, the original network backbone is also defined in `yolo.py`, and is available for training. Pretraining method is not yet finished (and maybe would never be finished since I've achieved reasonable results using other backbones), and is marked TODO in the file.
+**I wrote this repo for the purpose of learning, aimed to reproduce YOLO v1 using PyTorch.** It is very hard to pretrain the original network on ImageNet, so I replaced the backbone with ResNet18 and ResNet50 with PyTorch pretrained version for convenience. However, the original network backbone is also defined in `yolo.py`, and is available for training. Pretraining method is not yet finished (and maybe would never be finished since I've achieved reasonable results using other backbones), and is marked TODO in the file.
+
+Besides, I removed the Dropout layer and added Batch Normalization after every convolution layer according to [yolo v2](https://arxiv.org/pdf/1612.08242.pdf).
 
 The implementation of loss function is exact as the [original paper](https://arxiv.org/pdf/1506.02640.pdf). Also, I adapted all the hyper parameters from the paper, and the network is trained on VOC2007-trainval+test and VOC2012-train, tested on VOC2012-val using RTX2070s.
 
@@ -44,4 +46,5 @@ Model weight are available in repo release. Place the weights in `./model/` fold
 
 * https://github.com/abeardear/pytorch-YOLO-v1
 * https://arxiv.org/pdf/1506.02640.pdf
+* https://arxiv.org/pdf/1612.08242.pdf
 * Also big thanks to [@dmMaze](https://github.com/dmMaze)
