@@ -20,6 +20,15 @@ yolo
 └── yolo.py                   # YOLO module, loss, nms implementation
 ```
 
+## Performance
+
+|         Model          | Backbone  | mAP@VOC2012-val | COCOmAP@VOC2012-val |  FPS   |
+| :--------------------: | :-------: | :-------------: | :-----------------: | :----: |
+| YOLOv1-ResNet18 (Ours) | ResNet18  |     44.38%      |       21.41%        | 213.19 |
+| YOLOv1-ResNet50 (Ours) | ResNet50  |     45.86%      |       22.17%        | 96.16  |
+|         YOLOv1         | Darknet19 |      63.4%      |          /          |   45   |
+|      YOLOv1-VGG16      |   VGG16   |      66.4%      |          /          |   21   |
+
 ## Note
 
 When running the notebook for the first time, you should add `, download=True` param to `load_data_voc` to download dataset. It is suggested to remove the param after everything's set, since it is time-consuming to unarchive the data every time.
@@ -36,6 +45,12 @@ ResNet18 (Backbone):
 
 <div align="center">
 	<img src="./assets/resnet18-train.svg">
+</div>
+
+ResNet50 (Backbone):
+
+<div align="center">
+	<img src="./assets/resnet50-train.svg">
 </div>
 
 ## Testing
