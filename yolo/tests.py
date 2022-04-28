@@ -2,6 +2,8 @@ import cv2
 import torch
 import torchvision
 from torch.utils import data
+
+from utils.utils import Timer
 from .yolo import nms
 from IPython import display
 from utils.visualize import *
@@ -82,3 +84,29 @@ def test_img(net: torch.nn.Module, src: str, device: torch.device):
 		for x, yhat in zip(X, YHat):
 			yhat = nms(yhat)
 			display.display(cv2_to_PIL(draw_detection_result(tensor_to_cv2(x), yhat, raw=False, thres=0.1)))
+
+
+def test_fps(net: torch.nn.Module, test_iter_raw: data.DataLoader, device: torch.device):
+	"""Test batch fps
+
+	Args:
+		net (torch.nn.Module): network
+		test_iter_raw (data.DataLoader): test dataloader (raw)
+		device (torch.device): device
+	"""
+	with torch.no_grad():
+		net.eval()
+		net.to(device)
+
+		timer = Timer()
+
+		for i, (X, _) in enumerate(test_iter_raw):
+			print("Batch %d / %d" % (i, len(test_iter_raw)))
+			display.clear_output(wait=True)
+			for x in X:
+				x = x.unsqueeze(0).to(device)
+				timer.start()
+				net(x)
+				timer.stop()
+		
+		print("FPS:", float(1. / timer.avg()))
