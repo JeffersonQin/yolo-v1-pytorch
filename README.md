@@ -9,6 +9,7 @@ The implementation of loss function is exact as the [original paper](https://arx
 Here is the structure of the project.
 
 ```
+webcam.py                     # webcam demo
 utils
 ├── data.py                   # data pipeline
 ├── init.py                   # weight initialization
@@ -55,6 +56,8 @@ ResNet50 (Backbone):
 ## Testing
 
 Model weight are available in repo release. Place the weights in `./model/` folder, and run `resnet18-yolo-test.ipynb` and `resnet50-yolo-test.ipynb`.
+
+Here is also a demo using using webcam (`webcam.py`).
 
 ## Thanks
 
