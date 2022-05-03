@@ -29,6 +29,14 @@ yolo
 | YOLOv1-ResNet50 (Ours) | ResNet50  |     45.86%      |       22.17%        |   96.16    |
 |         YOLOv1         | Darknet19 |    **57.9%**    |          /          |     45     |
 
+![](./assets/test1.png)
+
+![](./assets/test2.png)
+
+![](./assets/test3.png)
+
+![](./assets/test4.png)
+
 ## Note
 
 When running the notebook for the first time, you should add `, download=True` param to `load_data_voc` to download dataset. It is suggested to remove the param after everything's set, since it is time-consuming to unarchive the data every time.
