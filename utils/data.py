@@ -179,10 +179,10 @@ def load_data_voc(batch_size, num_workers=0, persistent_workers=False, download=
 		torchvision.transforms.ToTensor(),
 	]
 	trans = torchvision.transforms.Compose(trans)
-	voc2007_trainval = torchvision.datasets.VOCDetection(root='./data/VOCDetection/', year='2007', image_set='trainval', download=download, transform=trans)
-	voc2007_test = torchvision.datasets.VOCDetection(root='./data/VOCDetection/', year='2007', image_set='test', download=download, transform=trans)
-	voc2012_train = torchvision.datasets.VOCDetection(root='./data/VOCDetection/', year='2012', image_set='train', download=download, transform=trans)
-	voc2012_val = torchvision.datasets.VOCDetection(root='./data/VOCDetection/', year='2012', image_set='val', download=download, transform=trans)
+	voc2007_trainval = torchvision.datasets.VOCDetection(root='../data/VOCDetection/', year='2007', image_set='trainval', download=download, transform=trans)
+	voc2007_test = torchvision.datasets.VOCDetection(root='../data/VOCDetection/', year='2007', image_set='test', download=download, transform=trans)
+	voc2012_train = torchvision.datasets.VOCDetection(root='../data/VOCDetection/', year='2012', image_set='train', download=download, transform=trans)
+	voc2012_val = torchvision.datasets.VOCDetection(root='../data/VOCDetection/', year='2012', image_set='val', download=download, transform=trans)
 	return (
 		data.DataLoader(VOCDataset(data.ConcatDataset([voc2007_trainval, voc2007_test, voc2012_train]), train=True), 
 			batch_size, shuffle=True, num_workers=num_workers, persistent_workers=persistent_workers), 
