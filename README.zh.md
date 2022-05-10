@@ -25,8 +25,8 @@ yolo
 
 |         Model          | Backbone | mAP@VOC2012-val | COCOmAP@VOC2012-val |    FPS     |
 | :--------------------: | :------: | :-------------: | :-----------------: | :--------: |
-| YOLOv1-ResNet18 (Ours) | ResNet18 |     44.38%      |       21.41%        | **223.61** |
-| YOLOv1-ResNet50 (Ours) | ResNet50 |     45.86%      |       22.17%        |   96.16    |
+| YOLOv1-ResNet18 (Ours) | ResNet18 |     48.10%      |       23.18%        | **235.47** |
+| YOLOv1-ResNet50 (Ours) | ResNet50 |   **49.87%**    |     **23.95**%      |   95.94    |
 |         YOLOv1         | Darknet? |    **57.9%**    |          /          |     45     |
 
 ![](./assets/test1.png)
@@ -69,9 +69,15 @@ ResNet50 (Backbone):
 
 Update：还实现了一个实时摄像头的 demo。
 
+Update [2022/05/10]: 根据 VOC 官方的说法，在测试阶段需要排除包含 difficult 标签的物体，虽然检测出来也不会惩罚。之前忽略了这句话，经过测试，排除 difficult 标签的物体之后，mAP 在两个模型上都提高了 4% 左右。
+
 ## 致谢
 
 * https://github.com/abeardear/pytorch-YOLO-v1
 * https://arxiv.org/pdf/1506.02640.pdf
 * https://arxiv.org/pdf/1612.08242.pdf
+* https://homepages.inf.ed.ac.uk/ckiw/postscript/ijcv_voc09.pdf
+* https://homepages.inf.ed.ac.uk/ckiw/postscript/ijcv_voc14.pdf
+* https://github.com/rafaelpadilla/Object-Detection-Metrics
+* https://github.com/rafaelpadilla/review_object_detection_metrics
 * 大感谢 [@dmMaze](https://github.com/dmMaze) 提供的帮助（
