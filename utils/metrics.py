@@ -15,17 +15,19 @@ class InterpolationMethod(Enum):
 
 
 class CalculationMetrics():
-	def __init__(self, IoU: float, confidence: float, mustbe_FP: bool):
+	def __init__(self, IoU: float, confidence: float, mustbe_FP: bool, is_difficult: bool):
 		"""Initialization for `CalculationMetrics`
 
 		Args:
 			IoU (float): intersection over union with ground truth
 			confidence (float): detection confidence
 			mustbe_FP (bool): if there is already another detection having higher IoU with the same ground truth, then this detection must be False Positive
+			is_difficult (bool): if the ground truth is difficult, then this detection may be neglected in certain cases
 		"""
 		self.IoU = IoU
 		self.confidence = confidence
 		self.mustbe_FP = mustbe_FP
+		self.is_difficult = is_difficult
 
 
 def compare_metrics(metrics1: CalculationMetrics, metrics2: CalculationMetrics):
@@ -125,18 +127,22 @@ class ObjectDetectionMetricsCalculator():
 			truth_index = choose_truth_index[i]
 			if truth_index == None: 
 				mustbe_FP = True
+				is_difficult = False
 			elif truth_chosen[truth_index]:
 				mustbe_FP = True
+				is_difficult = truth[choose_truth_index[i]]['difficult']
 			else: 
 				mustbe_FP = False
 				truth_chosen[choose_truth_index[i]] = True
+				is_difficult = truth[choose_truth_index[i]]['difficult']
 
-			self.data[cat]['data'].append(CalculationMetrics(iou[i], float(confidence * score), mustbe_FP))
+			self.data[cat]['data'].append(CalculationMetrics(iou[i], float(confidence * score), mustbe_FP, is_difficult))
 
 			# update detection statistics
 			self.data[cat]['detection'] += 1
 		# update ground truth statistics
 		for bbox in truth:
+			if bbox['difficult']: continue
 			self.data[bbox['category']]['truth'] += 1
 
 
@@ -155,15 +161,20 @@ class ObjectDetectionMetricsCalculator():
 		truth_cnt = self.data[class_idx]['truth']
 		# accumulated TP
 		acc_TP = 0
+		# accumulated difficult count
+		acc_difficult = 0
 		# sort metrics by confidence
 		data = sorted(self.data[class_idx]['data'], key=cmp_to_key(compare_metrics))
 		for i, metrics in enumerate(data):
-			if metrics.IoU >= iou_thres and not metrics.mustbe_FP:
+			if metrics.IoU >= iou_thres and not metrics.mustbe_FP and not metrics.is_difficult:
 				acc_TP += 1
-			ret.append({
-				'precision': acc_TP / (i + 1),
-				'recall': acc_TP / truth_cnt
-			})
+			if metrics.is_difficult:
+				acc_difficult += 1
+			if i + 1 - acc_difficult > 0:
+				ret.append({
+					'precision': acc_TP / (i + 1 - acc_difficult),
+					'recall': acc_TP / truth_cnt
+				})
 		
 		return ret
 

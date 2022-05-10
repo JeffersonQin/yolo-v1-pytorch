@@ -163,7 +163,8 @@ class VOCRawTestDataset(data.Dataset):
 				'ymin': float(obj['bndbox']['ymin']) / height,
 				'xmax': float(obj['bndbox']['xmax']) / width,
 				'ymax': float(obj['bndbox']['ymax']) / height,
-				'category': categories.index(obj['name'])
+				'category': categories.index(obj['name']),
+				'difficult': obj['difficult'] == '1',
 			})
 		
 		return img, json.dumps(ret_targets)
