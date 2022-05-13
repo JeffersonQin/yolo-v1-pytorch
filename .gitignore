@@ -1,3 +1,6 @@
+results.tar.gz
+results/
+VOC2012test/
 data/
 model/
 
