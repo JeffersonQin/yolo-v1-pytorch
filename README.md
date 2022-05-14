@@ -25,10 +25,10 @@ yolo
 
 ## Performance
 
-|         Model          | Backbone | mAP@VOC2012-val | COCOmAP@VOC2012-val |    FPS     |
-| :--------------------: | :------: | :-------------: | :-----------------: | :--------: |
-| YOLOv1-ResNet18 (Ours) | ResNet18 |     48.10%      |       23.18%        | **235.47** |
-| YOLOv1-ResNet50 (Ours) | ResNet50 |   **49.87%**    |     **23.95**%      |   95.94    |
+|         Model          | Backbone | mAP@VOC2012-val | COCOmAP@VOC2012-val |    FPS    |
+| :--------------------: | :------: | :-------------: | :-----------------: | :-------: |
+| YOLOv1-ResNet18 (Ours) | ResNet18 |     48.10%      |       23.18%        | **97.88** |
+| YOLOv1-ResNet50 (Ours) | ResNet50 |   **49.87%**    |     **23.95**%      |   58.40   |
 
 |         Model          | Backbone | mAP@VOC2012-test |    FPS    |
 | :--------------------: | :------: | :--------------: | :-------: |
