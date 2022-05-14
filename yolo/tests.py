@@ -104,8 +104,8 @@ def test_fps(net: torch.nn.Module, test_iter_raw: data.DataLoader, device: torch
 			print("Batch %d / %d" % (i, len(test_iter_raw)))
 			display.clear_output(wait=True)
 			for x in X:
-				x = x.unsqueeze(0).to(device)
 				timer.start()
+				x = x.unsqueeze(0).to(device)
 				net(x)
 				timer.stop()
 		
