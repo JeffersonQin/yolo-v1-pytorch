@@ -101,13 +101,16 @@ Here is also a demo using using webcam (`webcam.py`).
 
 ```
 .
-README.md                   # Other files
-VOC2012test                 # create dataset folder
-└── VOCdevkit
-    └── VOC2012
-        ├── Annotations
-        ├── ImageSets
-        └── JPEGImages
+yolo-v2-pytorch             # project folder
+├── ...                     # Other files
+└── README.md
+data
+└── VOC2012test             # create dataset folder
+    └── VOCdevkit
+        └── VOC2012
+            ├── Annotations
+            ├── ImageSets
+            └── JPEGImages
 ```
 
 VOC2012 test dataset download link:

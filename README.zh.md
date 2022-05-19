@@ -101,13 +101,16 @@ Update [2022/05/13]: 添加了 VOC2012 刷榜脚本。说是说刷榜脚本其�
 
 ```
 .
-README.md                   # Other files
-VOC2012test                 # create dataset folder
-└── VOCdevkit
-    └── VOC2012
-        ├── Annotations
-        ├── ImageSets
-        └── JPEGImages
+yolo-v2-pytorch             # project folder
+├── ...                     # Other files
+└── README.md
+data
+└── VOC2012test             # create dataset folder
+    └── VOCdevkit
+        └── VOC2012
+            ├── Annotations
+            ├── ImageSets
+            └── JPEGImages
 ```
 
 VOC2012 测试数据集下载链接
